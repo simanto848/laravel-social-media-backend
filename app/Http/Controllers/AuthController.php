@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistered;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -14,9 +17,29 @@ class AuthController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password'=> ['required', 'confirmed', 'min:6'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'gender' => ['required', 'in:male,female,other'],
+            'dob' => ['required', 'date', 'before:today'],
         ]);
 
-        $user = User::create($validateData);
+
+        $userData = [
+                'username' => $validateData['username'],
+                'email' => $validateData['email'],
+                'password' => $validateData['password'],
+            ];
+        $user = User::create($userData);
+
+        if ($user) {
+            Profile::create([
+                "user_id" => $user->id,
+                "first_name" => $validateData['first_name'],
+                'last_name'=> $validateData['last_name'],
+                'gender'=> $validateData['gender'],
+                "dob" => $validateData['dob']
+            ]);
+        }
 
         $token = $user->createToken($user->username)->plainTextToken;
 

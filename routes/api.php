@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,23 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Profile Routes
+    Route::prefix('profile')->group(function () {
+        // Retrieve profile
+        Route::get('/', [ProfileController::class, 'getProfile']);
+        Route::get('/lookup', [ProfileController::class, 'getProfileByUsernameOrEmail']);
+
+        // Update profile
+        Route::put('/names', [ProfileController::class, 'updateNames']);
+        Route::put('/details', [ProfileController::class, 'updateOthers']);
+
+        // Update user info
+        Route::put('/user-info', [ProfileController::class, 'updateUserInfo']);
+        Route::put('/password', [ProfileController::class, 'updatePassword']);
+
+        // Delete profile/user
+        Route::delete('/', [ProfileController::class, 'deleteProfile']);
+        Route::delete('/user', [ProfileController::class, 'deleteUser']);
+    });
 });
