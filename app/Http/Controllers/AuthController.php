@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
@@ -20,10 +20,14 @@ class AuthController extends Controller
 
         $token = $user->createToken($user->username)->plainTextToken;
 
-        return Response::json([
-            'token'=> $token,
-            'user'=> $user
-        ]);
+        return $this->success(
+            data: [
+                'token' => $token,
+                'user' => $user
+            ],
+            message: "User registered successfully",
+            statusCode: JsonResponse::HTTP_CREATED
+        );
     }
 
     public function login(Request $request) {
@@ -35,21 +39,31 @@ class AuthController extends Controller
         $user = User::where('username', $request->username)->first();
 
         if(empty($user) || !Hash::check($request->password, $user->password)) {
-            return Response::json([
-                'error'=> 'Invalid credentials',
-            ]);
+            return $this->error(
+                error: 'Invalid credentials',
+                message: "The provided credentials are incorrect",
+                statusCode: JsonResponse::HTTP_UNAUTHORIZED
+            );
         }
 
         $token = $user->createToken($user->username)->plainTextToken;
 
-        return Response::json([
-            'token'=> $token,
-            'user'=> $user
-        ]);
+        return $this->success(
+            data: [
+                'token' => $token,
+                'user' => $user
+            ],
+            message: "User logged in successfully",
+            statusCode: JsonResponse::HTTP_OK
+        );
     }
 
     public function logout(Request $request) {
         $request->user()->tokens()->delete();
-        return Response::json("Logged out successfully");
+        return $this->success(
+            data: [],
+            message: "User logged out successfully",
+            statusCode: 200
+        );
     }
 }
