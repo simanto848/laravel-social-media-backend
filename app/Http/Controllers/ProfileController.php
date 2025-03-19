@@ -61,8 +61,10 @@ class ProfileController extends Controller
         try {
             $userId = Auth::id();
             $data = $request->validate([
-                'bio' => 'nullable|string|max:500',
-                // Add other fields as needed
+                'phone_number' => ['nullable', 'string', 'max:25', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'unique:profiles,phone_number,' . $userId],
+                'bio' => ['nullable', 'string', 'max:255'],
+                'gender' => ['required', 'string', 'in:male,female,other'],
+                'dob' => ['required', 'date', 'before:today'],
             ]);
             $profile = $this->profileService->updateOthers($userId, $data);
             return $this->success($profile, "Profile details updated successfully");
