@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,5 +36,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Delete profile/user
         Route::delete('/', [ProfileController::class, 'deleteProfile']);
         Route::delete('/user', [ProfileController::class, 'deleteUser']);
+    });
+
+    Route::prefix('profile-image')->group(function () {
+        // Get all images for the authenticated user
+        Route::get('/all', [ProfileImageController::class, 'getAllImageOfUser']);
+
+        // Create a new profile picture
+        Route::post('/create', [ProfileImageController::class, 'createProfilePicture']);
+
+        // Get a single image by ID
+        Route::get('/{imageId}', [ProfileImageController::class, 'getSingleImage']);
+
+        // Get the current user's profile image
+        Route::get('/current', [ProfileImageController::class, 'getImageByUserId']);
+
+        // Update an existing profile picture
+        Route::put('/{imageId}', [ProfileImageController::class, 'updateProfilePicture']);
+
+        // Delete a profile picture
+        Route::delete('/{imageId}', [ProfileImageController::class, 'deleteProfilePicture']);
     });
 });
