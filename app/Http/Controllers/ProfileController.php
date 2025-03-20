@@ -92,13 +92,14 @@ class ProfileController extends Controller
     {
         try {
             $userId = Auth::id();
-            $request->validate([
-                'password' => 'required|string|min:8|confirmed',
+            $validateData = $request->validate([
+                'current_password' => ['required', 'string'],
+                'new_password' => ['required', 'string', 'min:6', 'confirmed'],
             ]);
-            $user = $this->profileService->updatePassword($userId, $request->password);
+            $user = $this->profileService->updatePassword($userId, $validateData);
             return $this->success($user, "Password updated successfully");
         } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to update password", JsonResponse::HTTP_BAD_REQUEST);
+            return $this->error($e->getMessage(), $e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
         }
     }
 

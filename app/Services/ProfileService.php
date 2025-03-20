@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Profile;
+use App\Models\User; // Add this missing import
 use App\Respository\ProfileRepository;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileService {
     protected $profileRepository;
@@ -58,7 +60,7 @@ class ProfileService {
         return $this->profileRepository->updateUserInfo($user, $data);
     }
 
-    public function updatePassword($userId, string $password) {
+    public function updatePassword($userId, array $passwordData) {
         $user = Auth::user();
 
         if (!$user) {
@@ -73,7 +75,11 @@ class ProfileService {
             throw new \Exception("You are Unauthorized to update password", 403);
         }
 
-        return $this->profileRepository->updatePassword($user, $password);
+        if(!Hash::check($passwordData['current_password'], $user->password)) {
+            throw new \Exception('Current password is incorrect',401);
+        }
+
+        return $this->profileRepository->updatePassword($user, $passwordData['new_password']);
     }
 
     public function destroyProfile($userId) {
