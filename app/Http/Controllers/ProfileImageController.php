@@ -28,9 +28,8 @@ class ProfileImageController extends Controller
     }
 
     public function getCurrentProfileImage() {
-        $userId = Auth::id();
-        dd($userId);
         try {
+            $userId = Auth::id();
             $image = $this->profileImageService->getCurrentProfileImage($userId);
             return $this->success($image, "Current profile image retrieved successfully");
         } catch (\Exception $exception) {

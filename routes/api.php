@@ -45,11 +45,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Create a new profile picture
         Route::post('/create', [ProfileImageController::class, 'createProfilePicture']);
 
-        // Get a single image by ID
-        Route::get('/{imageId}', [ProfileImageController::class, 'getSingleImage']);
-
         // Get the current user's profile image
         Route::get('/current', [ProfileImageController::class, 'getCurrentProfileImage']); # Not working
+
+        // Get a single image by ID
+        Route::get('/{imageId}', [ProfileImageController::class, 'getSingleImage']);
 
         // Update an existing profile picture
         Route::put('/{imageId}', [ProfileImageController::class, 'updateProfilePicture']);

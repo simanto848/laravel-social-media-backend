@@ -17,11 +17,18 @@ class ProfileImageService {
     }
 
     public function getCurrentProfileImage($userId) {
-        $image = $this->profileImageRepository->getAllImageByUser($userId);
+        $profile = Profile::where('user_id', $userId)->first();
+
+        if (!$profile || !$profile->profile_image_id) {
+            throw new \Exception("No current profile image found", 404);
+        }
+
+        $image = $this->profileImageRepository->getImageById($profile->profile_image_id);
 
         if (!$image) {
-            throw new \Exception("Image nai not found", 404);
+            throw new \Exception("Current profile image not found", 404);
         }
+
         return $image;
     }
 
