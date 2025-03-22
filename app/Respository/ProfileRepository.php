@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileRepository implements ProfileRespositoryInterface {
     public function getProfileByUserId(int $userId) {
-        $profile = Profile::where("user_id", $userId)->first();
+        $profile = Profile::where("user_id", $userId)->with("image")->first();
         return $profile;
     }
 

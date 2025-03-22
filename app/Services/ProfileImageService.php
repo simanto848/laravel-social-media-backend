@@ -89,6 +89,8 @@ class ProfileImageService {
             }
         }
 
+        $this->profileImageRepository->deleteImage($imageId);
+
         return true;
     }
 }
