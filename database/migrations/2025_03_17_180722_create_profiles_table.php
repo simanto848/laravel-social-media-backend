@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('bio')->nullable();
             $table->enum('gender', ['male', 'female', 'other']);
             $table->date('dob');
-            $table->foreignId('profile_image_id')->nullable()->constrained('images')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('profile_image_id')->nullable()->constrained('images')->nullOnDelete();
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

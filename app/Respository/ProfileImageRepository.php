@@ -12,9 +12,16 @@ class ProfileImageRepository implements ProfileImageRepositoryInterface {
         return Image::find($id);
     }
 
-    public function getImageByUser($userId) {
-        $profile = Profile::where('user_id', $userId)->first();
-        return $profile?->image;
+    public function getCurrentProfileImage($userId) {
+        $profile = Profile::where("user_id", $userId)->first();
+        if ($profile && $profile->profile_image_id) {
+            return Image::find($profile->profile_image_id);
+        }
+        return null;
+        // $profile = Profile::where("user_id", $userId)
+        // ->with('image')
+        // ->first();
+        // return $profile?->image;
     }
 
     public function getAllImageByUser($userId) {
@@ -31,21 +38,6 @@ class ProfileImageRepository implements ProfileImageRepositoryInterface {
             'imageable_id' => $data['imageable_id'],
             'imageable_type' => $data['imageable_type']
         ]);
-    }
-
-    public function updateImage(array $data, $userId, $imageId) {
-        $image = Image::where('imageable_id', $userId)
-            ->where('imageable_type', 'App\Models\Profile')
-            ->where('id', $data['image_id'] ?? null)
-            ->first();
-
-        if (!$image) return null;
-
-        Storage::disk('public')->delete($image->path);
-        $path = $data['image']->store('profile_images', 'public');
-
-        $image->update(['path' => $path]);
-        return $image;
     }
 
     public function deleteImage($imageId) {

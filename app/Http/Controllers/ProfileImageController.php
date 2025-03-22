@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreImageRequest;
-use App\Http\Requests\UpdateImageRequest;
-use App\Models\Profile;
 use App\Services\ProfileImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,10 +27,11 @@ class ProfileImageController extends Controller
         }
     }
 
-    public function getImageByUserId() {
+    public function getCurrentProfileImage() {
+        $userId = Auth::id();
+        dd($userId);
         try {
-            $userId = Auth::id();
-            $image = $this->profileImageService->getImageByUser($userId);
+            $image = $this->profileImageService->getCurrentProfileImage($userId);
             return $this->success($image, "Current profile image retrieved successfully");
         } catch (\Exception $exception) {
             return $this->error($exception, $exception->getMessage());
@@ -50,10 +48,12 @@ class ProfileImageController extends Controller
         }
     }
 
-    public function createProfilePicture(StoreImageRequest $request) {
+    public function createProfilePicture(Request $request) {
         try {
+            $data = $request->validate([
+                'image' => ['required', 'image', 'max:10240'],
+            ]);
             $userId = Auth::id();
-            $data = $request->validated();
             $data['imageable_id'] = $userId;
             $data['imageable_type'] = "App\Models\Profile";
 
@@ -64,14 +64,11 @@ class ProfileImageController extends Controller
         }
     }
 
-    public function updateProfilePicture(UpdateImageRequest $request, $imageId) {
+    public function updateProfilePicture($imageId) {
         try {
             $userId = Auth::id();
-            $data = $request->validated();
-            $data['imageable_id'] = $userId;
-            $data['imageable_type'] = 'App\Models\Profile';
 
-            $image = $this->profileImageService->updateImage($data, $userId, $imageId);
+            $image = $this->profileImageService->updateImage($userId, $imageId);
             return $this->success($image, "Profile picture updated successfully");
         } catch (\Exception $exception) {
             return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
