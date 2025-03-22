@@ -49,9 +49,12 @@ class ProfileImageController extends Controller
 
     public function createProfilePicture(Request $request) {
         try {
-            $data = $request->validate([
-                'image' => ['required', 'image', 'max:10240'],
-            ]);
+            $file = $request->file('image');
+            if (!$file) {
+                return $this->error(null, "Image is required", 400);
+            }
+
+            $data = $request->all();
             $userId = Auth::id();
             $data['imageable_id'] = $userId;
             $data['imageable_type'] = "App\Models\Profile";
