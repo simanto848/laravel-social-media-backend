@@ -47,4 +47,20 @@ class FriendRepository implements FriendRepositoryInterface {
         }
         return $friendShip->update(['status' => 'accepted']);
     }
+
+    // Reject Friend Request
+    public function rejectFriendRequest(int $friendShipId) {
+        $friendShip = Friend::where("id", $friendShipId)->first();
+
+        if (!$friendShip) {
+            throw new \Exception("There is no friendship available!");
+        }
+        if ($friendShip->friend_id !== Auth::id()) {
+            throw new \Exception("You are not authorized to accept this friend request!");
+        }
+        if ($friendShip->status !== 'pending') {
+            throw new \Exception("You cannot accept a request that is not available!");
+        }
+        return $friendShip->delete();
+    }
 }

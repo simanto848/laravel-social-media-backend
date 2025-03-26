@@ -27,4 +27,9 @@ class FriendService {
     public function acceptFriendRequest($friendShipId) {
         return $this->friendRepository->acceptFriendRequest($friendShipId);
     }
+
+    // Reject Friend Request
+    public function rejectFriendRequest($friendShipId) {
+        return $this->friendRepository->rejectFriendRequest($friendShipId);
+    }
 }

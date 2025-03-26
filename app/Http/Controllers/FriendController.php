@@ -33,4 +33,14 @@ class FriendController extends Controller
             return $this->error($exception, $exception->getMessage());
         }
     }
+
+    // Reject Friend Request
+    public function rejectFriendRequest($friendShipId) {
+        try {
+            $this->friendService->rejectFriendRequest($friendShipId);
+            return $this->success(null, "You removed friend request");
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage());
+        }
+    }
 }

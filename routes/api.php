@@ -66,5 +66,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Accept Friend Request Route
         Route::put("/accept/{friendShipId}", [FriendController::class, "acceptFriendRequest"]);
+
+        // Reject Friend Request
+        Route::delete("/reject/{friendShipId}", [FriendController::class, "rejectFriendRequest"]);
     });
 });
