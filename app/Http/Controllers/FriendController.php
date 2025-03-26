@@ -14,10 +14,21 @@ class FriendController extends Controller
         $this->friendService = $friendService;
     }
 
+    // Send Friend Request
     public function sendFriendRequest($friendId) {
         try {
             $friend = $this->friendService->sendFriendRequest($friendId);
             return $this->success($friend, "Send Friend Request");
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage());
+        }
+    }
+
+    // Accept Friend Request
+    public function acceptFriendRequest($friendShipId) {
+        try {
+            $friend = $this->friendService->acceptFriendRequest($friendShipId);
+            return $this->success($friend,"Friend Request accepted");
         } catch (\Exception $exception) {
             return $this->error($exception, $exception->getMessage());
         }

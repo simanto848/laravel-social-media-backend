@@ -61,6 +61,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Friend Routes
     Route::prefix("/friends")->group(function () {
+        // Send Friend Request
         Route::post('/send-request/{friendId}', [FriendController::class, 'sendFriendRequest']);
+
+        // Accept Friend Request Route
+        Route::put("/accept/{friendShipId}", [FriendController::class, "acceptFriendRequest"]);
     });
 });
