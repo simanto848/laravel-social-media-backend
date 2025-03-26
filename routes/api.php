@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileImageController;
 use Illuminate\Http\Request;
@@ -56,5 +57,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Delete a profile picture
         Route::delete('/{imageId}', [ProfileImageController::class, 'deleteProfilePicture']);
+    });
+
+    // Friend Routes
+    Route::prefix("/friends")->group(function () {
+        Route::post('/send-request/{friendId}', [FriendController::class, 'sendFriendRequest']);
     });
 });

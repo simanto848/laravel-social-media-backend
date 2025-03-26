@@ -33,7 +33,7 @@ class Friend extends Model
     }
 
     public function friend() {
-        return $this->belongsTo(Friend::class, 'friend_id');
+        return $this->belongsTo(User::class, 'friend_id');
     }
 
     public function requester() {
