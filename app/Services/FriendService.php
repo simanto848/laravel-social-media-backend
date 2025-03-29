@@ -32,4 +32,11 @@ class FriendService {
     public function rejectFriendRequest($friendShipId) {
         return $this->friendRepository->rejectFriendRequest($friendShipId);
     }
+
+    // Suggest Friend for sending friend request
+    public function suggestFriends() {
+        $userId = Auth::id();
+        $users = $this->friendRepository->suggestFriend($userId);
+        return $users;
+    }
 }

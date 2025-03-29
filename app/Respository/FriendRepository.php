@@ -63,4 +63,21 @@ class FriendRepository implements FriendRepositoryInterface {
         }
         return $friendShip->delete();
     }
+
+    // Suggest Friend for send friend request
+    public function suggestFriend(int $userId) {
+        $relatedIds = Friend::where('user_id', $userId)
+            ->whereIn('status', ['pending', 'accepted'])
+            ->pluck('friend_id')
+            ->merge(
+                Friend::where('friend_id', $userId)
+                    ->whereIn('status', ['pending', 'accepted'])
+                    ->pluck('user_id')
+            )
+            ->toArray();
+
+        $excludedIds = array_merge($relatedIds, [$userId]);
+
+        return User::with('profile')->whereNotIn('id', $excludedIds)->get();
+    }
 }

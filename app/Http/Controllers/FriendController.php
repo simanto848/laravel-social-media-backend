@@ -43,4 +43,14 @@ class FriendController extends Controller
             return $this->error($exception, $exception->getMessage());
         }
     }
+
+    // Suggest Friend for sending friend request
+    public function suggestFriends() {
+        try {
+            $users = $this->friendService->suggestFriends();
+            return $this->success($users, "Suggested Friend List retrieved");
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage());
+        }
+    }
 }
