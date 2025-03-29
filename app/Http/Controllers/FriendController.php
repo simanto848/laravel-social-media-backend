@@ -12,6 +12,7 @@ class FriendController extends Controller
     public function __construct(FriendService $friendService)
     {
         $this->friendService = $friendService;
+        $this->middleware('auth:sanctum');
     }
 
     // Send Friend Request

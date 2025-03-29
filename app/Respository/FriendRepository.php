@@ -5,6 +5,7 @@ namespace App\Respository;
 use App\Models\Friend;
 use App\Models\Profile;
 use App\Models\User;
+use App\Notifications\FriendRequestSentNotification;
 use App\Respository\Interfaces\FriendRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,11 +22,17 @@ class FriendRepository implements FriendRepositoryInterface {
             throw new \Exception("There is already a pending friend request or an existing friendship");
         }
 
-        return Friend::create([
+        $friend = Friend::create([
             "user_id" => $userId,
             "friend_id" => $friendId,
             "requested_by" => $userId
         ]);
+
+        $sender = User::find($userId);
+        $recipent = User::find($friendId);
+        $recipent->notify(new FriendRequestSentNotification($sender));
+
+        return $friend;
     }
 
     public function checkFriendShip(int $userId, int $friendId) {
