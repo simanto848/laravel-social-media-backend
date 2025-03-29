@@ -3,6 +3,7 @@
 namespace App\Respository;
 
 use App\Models\Friend;
+use App\Models\Profile;
 use App\Models\User;
 use App\Respository\Interfaces\FriendRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
@@ -67,17 +68,20 @@ class FriendRepository implements FriendRepositoryInterface {
     // Suggest Friend for send friend request
     public function suggestFriend(int $userId) {
         $relatedIds = Friend::where('user_id', $userId)
-            ->whereIn('status', ['pending', 'accepted'])
-            ->pluck('friend_id')
-            ->merge(
-                Friend::where('friend_id', $userId)
-                    ->whereIn('status', ['pending', 'accepted'])
-                    ->pluck('user_id')
-            )
-            ->toArray();
+        ->whereIn('status', ['pending', 'accepted'])
+        ->pluck('friend_id')
+        ->merge(
+            Friend::where('friend_id', $userId)
+                ->whereIn('status', ['pending', 'accepted'])
+                ->pluck('user_id')
+        )
+        ->unique() // Ensure no duplicate IDs
+        ->toArray();
 
+        // Combine related IDs with the logged-in user's ID to exclude them
         $excludedIds = array_merge($relatedIds, [$userId]);
 
-        return User::with('profile')->whereNotIn('id', $excludedIds)->get();
+        // Fetch profiles with their images, excluding users in $excludedIds
+        return Profile::with('image')->whereNotIn('user_id', $excludedIds)->get();
     }
 }
