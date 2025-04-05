@@ -13,8 +13,8 @@ class ProfileRepository implements ProfileRespositoryInterface {
         return $profile;
     }
 
-    public function getProfileByUsernameOrEmail(string $usernameOrEmail) {
-        $profile = Profile::where("username", $usernameOrEmail)->orWhere("email", $usernameOrEmail)->first();
+    public function getProfileByUsername(string $username) {
+        $profile = User::where("username", $username)->with('profile.image')->first();
         return $profile;
     }
 

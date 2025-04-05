@@ -16,48 +16,42 @@ Route::get("/user", function (Request $request) {
 Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+
+    // Public Profile Routes (read-only)
+    Route::prefix('profile')->group(function () {
+        Route::get('/{userId}', [ProfileController::class, 'getProfile']);
+        Route::get('/username/{username}', [ProfileController::class, 'getProfileByUsername']);
+    });
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Profile Routes
-    Route::prefix('profile')->group(function () {
-        // Retrieve profile
-        Route::get('/', [ProfileController::class, 'getProfile']);
-        Route::get('/lookup', [ProfileController::class, 'getProfileByUsernameOrEmail']);
-
-        // Update profile
+    Route::prefix('profile')->middleware('profile.owner')->group(function () {
+        // Restricted routes (only for profile owner)
         Route::put('/names', [ProfileController::class, 'updateNames']);
         Route::put('/details', [ProfileController::class, 'updateOthers']);
-
-        // Update user info
         Route::put('/user-info', [ProfileController::class, 'updateUserInfo']);
         Route::put('/password', [ProfileController::class, 'updatePassword']);
-
-        // Delete profile/user
         Route::delete('/', [ProfileController::class, 'deleteProfile']);
         Route::delete('/user', [ProfileController::class, 'deleteUser']);
     });
 
     Route::prefix('profile-image')->group(function () {
-        // Get all images for the authenticated user
+        // Get all images for a user (publicly accessible, defaults to authenticated user if no username provided)
         Route::get('/all', [ProfileImageController::class, 'getAllImageOfUser']);
 
-        // Create a new profile picture
-        Route::post('/create', [ProfileImageController::class, 'createProfilePicture']);
+        // Restricted routes (only for profile owner)
+        Route::middleware('profile.owner')->group(function () {
+            Route::post('/create', [ProfileImageController::class, 'createProfilePicture']);
+            Route::put('/{imageId}', [ProfileImageController::class, 'updateProfilePicture']);
+            Route::delete('/{imageId}', [ProfileImageController::class, 'deleteProfilePicture']);
+        });
 
-        // Get the current user's profile image
-        Route::get('/current', [ProfileImageController::class, 'getCurrentProfileImage']); # Not working
-
-        // Get a single image by ID
+        // Other read-only routes
+        Route::get('/current', [ProfileImageController::class, 'getCurrentProfileImage']);
         Route::get('/{imageId}', [ProfileImageController::class, 'getSingleImage']);
-
-        // Update an existing profile picture
-        Route::put('/{imageId}', [ProfileImageController::class, 'updateProfilePicture']);
-
-        // Delete a profile picture
-        Route::delete('/{imageId}', [ProfileImageController::class, 'deleteProfilePicture']);
     });
 
     // Friend Routes

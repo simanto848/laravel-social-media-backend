@@ -16,32 +16,30 @@ class ProfileController extends Controller
 
     public function __construct(ProfileService $profileService){
         $this->profileService = $profileService;
-        $this->middleware('auth:sanctum');
+        // $this->middleware('auth:sanctum');
     }
 
-    public function getProfile(): JsonResponse
+    public function getProfile($userId)
     {
         try {
-            $userId = Auth::id();
             $profile = $this->profileService->getProfileByUserId($userId);
             return $this->success($profile, "Profile retrieved successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to retrieve profile", $e->getCode() ?: JsonResponse::HTTP_NOT_FOUND);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
-    public function getProfileByUsernameOrEmail(Request $request): JsonResponse
+    public function getProfileByUsername(Request $request, $username)
     {
         try {
-            $usernameOrEmail = $request->input('username_or_email');
-            $profile = $this->profileService->getProfileByUsernameOrEmail($usernameOrEmail);
+            $profile = $this->profileService->getProfileByUsername($username);
             return $this->success($profile, "Profile retrieved successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to retrieve profile", $e->getCode() ?: JsonResponse::HTTP_NOT_FOUND);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
-    public function updateNames(Request $request): JsonResponse
+    public function updateNames(Request $request)
     {
         try {
             $userId = Auth::id();
@@ -51,12 +49,12 @@ class ProfileController extends Controller
             ]);
             $profile = $this->profileService->updateNames($userId, $data);
             return $this->success($profile, "Profile names updated successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to update profile names", JsonResponse::HTTP_BAD_REQUEST);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
-    public function updateOthers(Request $request): JsonResponse
+    public function updateOthers(Request $request)
     {
         try {
             $userId = Auth::id();
@@ -68,12 +66,12 @@ class ProfileController extends Controller
             ]);
             $profile = $this->profileService->updateOthers($userId, $data);
             return $this->success($profile, "Profile details updated successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to update profile details", JsonResponse::HTTP_BAD_REQUEST);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
-    public function updateUserInfo(Request $request): JsonResponse
+    public function updateUserInfo(Request $request)
     {
         try {
             $userId = Auth::id();
@@ -83,12 +81,12 @@ class ProfileController extends Controller
             ]);
             $user = $this->profileService->updateUserInfo($userId, $data);
             return $this->success($user, "User info updated successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to update user info", JsonResponse::HTTP_BAD_REQUEST);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
-    public function updatePassword(Request $request): JsonResponse
+    public function updatePassword(Request $request)
     {
         try {
             $userId = Auth::id();
@@ -98,30 +96,30 @@ class ProfileController extends Controller
             ]);
             $user = $this->profileService->updatePassword($userId, $validateData);
             return $this->success($user, "Password updated successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), $e->getMessage(), JsonResponse::HTTP_BAD_REQUEST);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
-    public function deleteProfile(): JsonResponse
+    public function deleteProfile()
     {
         try {
             $userId = Auth::id();
             $this->profileService->destroyProfile($userId);
             return $this->success(null, "Profile deleted successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to delete profile", JsonResponse::HTTP_BAD_REQUEST);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 
-    public function deleteUser(): JsonResponse
+    public function deleteUser()
     {
         try {
             $userId = Auth::id();
             $this->profileService->destroyUser($userId);
             return $this->success(null, "User deleted successfully");
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), "Failed to delete user", JsonResponse::HTTP_BAD_REQUEST);
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage(), $exception->getCode() ?: 500);
         }
     }
 }

@@ -16,12 +16,6 @@ class ProfileService {
     }
 
     public function getProfileByUserId($userId) {
-        $authUserId = Auth::id();
-
-        if($authUserId !== $userId) {
-            throw new \Exception("Unauthorized access to profile", 403);
-        }
-
         $profile = $this->profileRepository->getProfileByUserId($userId);
 
         if(!$profile) {
@@ -30,8 +24,8 @@ class ProfileService {
         return $profile;
     }
 
-    public function getProfileByUsernameOrEmail($usernameOrEmail) {
-        $profile = $this->profileRepository->getProfileByUsernameOrEmail($usernameOrEmail);
+    public function getProfileByUsername($username) {
+        $profile = $this->profileRepository->getProfileByUsername($username);
         if(!$profile) {
             throw new \Exception("Profile Not Found!",404);
         }

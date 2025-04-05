@@ -7,7 +7,7 @@ use App\Models\User;
 
 interface ProfileRespositoryInterface {
     public function getProfileByUserId(int $userId);
-    public function getProfileByUsernameOrEmail(string $usernameOrEmail);
+    public function getProfileByUsername(string $username);
     public function updateNames(Profile $profile, array $data);
     public function updateOthers(Profile $profile, array $data);
     public function updateUserInfo(User $user, array $data); # Update [username, email]
