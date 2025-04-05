@@ -50,4 +50,11 @@ class FriendService {
             throw new \Exception("No friendship found");
         }
     }
+
+    // Get Friend List
+    public function getFriendList() {
+        $userId = Auth::id();
+        $friends = $this->friendRepository->getFriendList($userId);
+        return $friends;
+    }
 }

@@ -118,4 +118,21 @@ class FriendRepository implements FriendRepositoryInterface {
         // Fetch profiles with their images, excluding users in $excludedIds
         return Profile::with('image')->whereNotIn('user_id', $excludedIds)->get();
     }
+
+    // Get Friend List
+    public function getFriendList(int $userId) {
+        $friendIds = Friend::where('user_id', $userId)
+            ->where('status', 'accepted')
+            ->pluck('friend_id')
+            ->merge(
+                Friend::where('friend_id', $userId)
+                    ->where('status', 'accepted')
+                    ->pluck('user_id')
+            )
+            ->unique()
+            ->toArray();
+
+        // Fetch profiles with their images, excluding users in $excludedIds
+        return Profile::with('image')->whereIn('user_id', $friendIds)->get();
+    }
 }

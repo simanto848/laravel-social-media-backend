@@ -8,4 +8,6 @@ interface FriendRepositoryInterface {
     public function acceptFriendRequest(int $friendShipId);
     public function rejectFriendRequest(int $friendShipId);
     public function suggestFriend(int $userId);
+    public function getFriendList(int $userId);
+    // public function getFriendRequestList(int $userId);
 }

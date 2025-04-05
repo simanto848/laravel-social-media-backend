@@ -70,6 +70,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Get friendship
         Route::get("/friendship/{friendId}", [FriendController::class, "getFriendship"]);
+
+        // Get Friend List
+        Route::get("/list", [FriendController::class, "getFriendList"]);
     });
 
     // Notification Routes
