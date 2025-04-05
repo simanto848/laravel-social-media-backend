@@ -39,4 +39,15 @@ class FriendService {
         $users = $this->friendRepository->suggestFriend($userId);
         return $users;
     }
+
+    // Get friendship
+    public function getFriendship($friendId) {
+        $userId = Auth::id();
+        $friendship = $this->friendRepository->checkFriendShip($userId, (int) $friendId);
+        if ($friendship) {
+            return $friendship;
+        } else {
+            throw new \Exception("No friendship found");
+        }
+    }
 }

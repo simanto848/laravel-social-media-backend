@@ -60,13 +60,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/send-request/{friendId}', [FriendController::class, 'sendFriendRequest']);
 
         // Accept Friend Request Route
-        Route::put("/accept/{friendShipId}", [FriendController::class, "acceptFriendRequest"]);
+        Route::put("/accept-request/{friendShipId}", [FriendController::class, "acceptFriendRequest"]);
 
         // Reject Friend Request
-        Route::delete("/reject/{friendShipId}", [FriendController::class, "rejectFriendRequest"]);
+        Route::delete("/reject-request/{friendShipId}", [FriendController::class, "rejectFriendRequest"]);
 
         // Suggest Friend for sending friend request
         Route::get("/suggest", [FriendController::class, "suggestFriends"]);
+
+        // Get friendship
+        Route::get("/friendship/{friendId}", [FriendController::class, "getFriendship"]);
     });
 
     // Notification Routes

@@ -40,9 +40,11 @@ class FriendRequestAcceptedNotification extends Notification
     {
         return [
             'accepter_id' => $this->accepter ? $this->accepter->id : null,
+            'accepter_username' => $this->accepter ? $this->accepter->username : null,
             'message' => $this->accepter && $this->accepter->profile
                 ? $this->accepter->profile->first_name . ' ' . $this->accepter->profile->last_name . ' accepted your friend request'
                 : 'Someone accepted your friend request',
+            'type' => 'friend_request',
             'timestamp' => now()->toDateTimeString(),
         ];
     }
