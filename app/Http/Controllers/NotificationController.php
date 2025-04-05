@@ -20,13 +20,14 @@ class NotificationController extends Controller
         ], "Unread notifications count retrieved successfully.");
     }
 
-    public function recentNotifications() {
+    public function notifications() {
         $user = Auth::user();
         $notifications = $user->notifications()->latest()->limit(10)->get()->map(function ($notif) {
                 return [
                     'id' => $notif->id,
                     'message' => $notif->data['message'],
                     'sender_id' => $notif->data['sender_id'] ?? null,
+                    'sender_username' => $notif->data['sender_username'] ?? null,
                     'type' => $notif->data['type'] ?? 'unknown',
                     'timestamp' => $notif->created_at->toDateTimeString(),
                     'read_at' => $notif->read_at ? $notif->read_at->toDateTimeString() : null,

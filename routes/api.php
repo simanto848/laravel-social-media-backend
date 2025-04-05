@@ -71,8 +71,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Notification Routes
     Route::prefix("notifications")->group(function () {
+        Route::get('/', [NotificationController::class, 'notifications']);
         Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
-        Route::get('/recent', [NotificationController::class, 'recentNotifications']);
         Route::post('/mark-as-read', [NotificationController::class, 'markAsRead']);
         Route::delete('/{notificationId}', [NotificationController::class, 'deleteNotification']);
     });

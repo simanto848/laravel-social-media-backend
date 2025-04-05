@@ -52,7 +52,8 @@ class FriendRequestSentNotification extends Notification
         return [
             'message' => 'You have a new friend request from '.$this->sender->profile->first_name.' '.$this->sender->profile->last_name,
             'sender_id' => $this->sender->id,
-            'type' => 'friend_request'
+            'type' => 'friend_request',
+            'sender_username' => $this->sender->username
         ];
     }
 }
