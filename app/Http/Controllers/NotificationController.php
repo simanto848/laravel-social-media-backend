@@ -22,11 +22,7 @@ class NotificationController extends Controller
 
     public function recentNotifications() {
         $user = Auth::user();
-        $notifications = $user->notifications()
-            ->latest()
-            ->limit(10)
-            ->get()
-            ->map(function ($notif) {
+        $notifications = $user->notifications()->latest()->limit(10)->get()->map(function ($notif) {
                 return [
                     'id' => $notif->id,
                     'message' => $notif->data['message'],
@@ -49,7 +45,12 @@ class NotificationController extends Controller
 
     public function deleteNotification($notificationId) {
         $user = Auth::user();
-        $user->unreadNotifications()->where('id', $notificationId)->delete();
-        return $this->success(null,'Notification deleted successfully');
+        $deleted = $user->notifications()->where('id', $notificationId)->delete();
+
+        if ($deleted) {
+            return $this->success(null, 'Notification deleted successfully');
+        } else {
+            return $this->error(null, 'Notification not found or already deleted', 404);
+        }
     }
 }
