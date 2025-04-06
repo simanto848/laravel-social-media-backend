@@ -84,4 +84,14 @@ class FriendController extends Controller
             return $this->error($exception, $exception->getMessage());
         }
     }
+
+    // Get Friend Request List
+    public function getFriendRequestList() {
+        try {
+            $friendRequests = $this->friendService->getFriendRequestList();
+            return $this->success($friendRequests, "Friend Request List retrieved");
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage());
+        }
+    }
 }

@@ -155,7 +155,7 @@ class FriendRepository implements FriendRepositoryInterface {
             throw new \Exception("You are not authorized to unfriend this user!");
         }
 
-        // Clean up notifications for both users (if applicable)
+        // Clean up notifications for both users
         $user = User::find($friendShip->user_id);
         $friend = User::find($friendShip->friend_id);
 
@@ -172,7 +172,18 @@ class FriendRepository implements FriendRepositoryInterface {
                 ->delete();
         }
 
-        // Delete the friendship and return the result
         return $friendShip->delete();
+    }
+
+    public function getFriendRequestList(int $userId) {
+        $friendRequests = Friend::where(function ($query) use ($userId) {
+            $query->where('friend_id', $userId)
+                ->where('status', 'pending');
+        })->with(['user.profile.image'])->get();
+
+        if ($friendRequests->isEmpty()) {
+            throw new \Exception("No friend requests found!");
+        }
+        return $friendRequests;
     }
 }
