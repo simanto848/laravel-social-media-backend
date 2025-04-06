@@ -10,4 +10,5 @@ interface FriendRepositoryInterface {
     public function suggestFriend(int $userId);
     public function getFriendList(int $userId);
     // public function getFriendRequestList(int $userId);
+    public function unFriend(int $friendShipId, int $userId);
 }

@@ -135,4 +135,44 @@ class FriendRepository implements FriendRepositoryInterface {
         // Fetch profiles with their images, excluding users in $excludedIds
         return Profile::with('image')->whereIn('user_id', $friendIds)->get();
     }
+
+    // Unfriend a user
+    public function unFriend(int $friendId, int $userId) {
+        // Find the friendship between the authenticated user and the friend
+        $friendShip = Friend::where(function ($query) use ($userId, $friendId) {
+                $query->where("user_id", $userId)->where("friend_id", $friendId)
+                    ->orWhere("user_id", $friendId)->where("friend_id", $userId);
+            })
+            ->where("status", "accepted")
+            ->first();
+
+        if (!$friendShip) {
+            throw new \Exception("No accepted friendship found with this user!");
+        }
+
+        // Ensure the current authenticated user is part of the friendship
+        if ($userId !== Auth::id()) {
+            throw new \Exception("You are not authorized to unfriend this user!");
+        }
+
+        // Clean up notifications for both users (if applicable)
+        $user = User::find($friendShip->user_id);
+        $friend = User::find($friendShip->friend_id);
+
+        if ($user && $friend) {
+            // Delete any related friend request/accepted notifications
+            $user->notifications()
+                ->where('type', FriendRequestAcceptedNotification::class)
+                ->whereRaw('JSON_EXTRACT(data, "$.accepter_id") = ?', [$friend->id])
+                ->delete();
+
+            $friend->notifications()
+                ->where('type', FriendRequestAcceptedNotification::class)
+                ->whereRaw('JSON_EXTRACT(data, "$.accepter_id") = ?', [$user->id])
+                ->delete();
+        }
+
+        // Delete the friendship and return the result
+        return $friendShip->delete();
+    }
 }

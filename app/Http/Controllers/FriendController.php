@@ -65,10 +65,21 @@ class FriendController extends Controller
         }
     }
 
+    // Get Friend List
     public function getFriendList() {
         try {
             $friendShip = $this->friendService->getFriendList();
             return $this->success($friendShip, "Friend List retrieved");
+        } catch (\Exception $exception) {
+            return $this->error($exception, $exception->getMessage());
+        }
+    }
+
+    // Unfriend a user
+    public function unFriend($friendId) {
+        try {
+            $friendShip = $this->friendService->unFriend($friendId);
+            return $this->success($friendShip, "Unfriend successfully");
         } catch (\Exception $exception) {
             return $this->error($exception, $exception->getMessage());
         }

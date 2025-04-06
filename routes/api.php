@@ -73,6 +73,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Get Friend List
         Route::get("/list", [FriendController::class, "getFriendList"]);
+
+        // Unfriend a user
+        Route::delete("/unfriend/{friendId}", [FriendController::class, "unFriend"]);
     });
 
     // Notification Routes

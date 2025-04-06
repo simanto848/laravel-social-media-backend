@@ -57,4 +57,11 @@ class FriendService {
         $friends = $this->friendRepository->getFriendList($userId);
         return $friends;
     }
+
+    // Unfriend a user
+    public function unFriend($friendId) {
+        $userId = Auth::id();
+        $friendShip = $this->friendRepository->unFriend($friendId, $userId);
+        return $friendShip;
+    }
 }
