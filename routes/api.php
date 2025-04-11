@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileImageController;
 use Illuminate\Http\Request;
@@ -87,5 +88,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
         Route::post('/mark-as-read', [NotificationController::class, 'markAsRead']);
         Route::delete('/{notificationId}', [NotificationController::class, 'deleteNotification']);
+    });
+
+    // Post Routes
+    Route::prefix('posts')->group(function () {
+        Route::post('/create', [PostController::class, 'createPost']);
     });
 });
